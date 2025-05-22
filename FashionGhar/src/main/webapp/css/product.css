@@ -1,0 +1,78 @@
+@charset "ISO-8859-1";
+#content main .product-data {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 24px;
+    margin-top: 24px;
+    width: 100%;
+    color: var(--dark);
+}
+#content main .product-data > div {
+    border-radius: 20px;
+    background: var(--light);
+    padding: 24px;
+    overflow-x: auto;
+}
+#content main .product-data .head {
+    display: flex;
+    align-items: center;
+    grid-gap: 16px;
+    margin-bottom: 24px;
+}
+#content main .product-data .head h3 {
+    margin-right: auto;
+    font-size: 24px;
+    font-weight: 600;
+}
+#content main .product-data .head .bx {
+    cursor: pointer;
+}
+
+#content main .product-data .products {
+    flex-grow: 1;
+    flex-basis: 500px;
+}
+#content main .product-data .products table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#content main .product-data .products table th {
+    padding-bottom: 12px;
+    font-size: 13px;
+    text-align: left;
+    border-bottom: 1px solid var(--grey);
+}
+#content main .product-data .products table td {
+    padding: 16px 0;
+}
+#content main .product-data .products table tr td:first-child {
+    display: flex;
+    align-items: center;
+    grid-gap: 12px;
+    padding-left: 6px;
+}
+#content main .product-data .products table td img {
+    width: 150px;
+    height: 145px;
+    border-radius: 10%;
+    object-fit: cover;
+}
+#content main .product-data .products table tbody tr:hover {
+    background: var(--grey);
+}
+#content main .product-data .products table tr td .status {
+    font-size: 10px;
+    padding: 6px 16px;
+    color: var(--light);
+    border-radius: 20px;
+    font-weight: 700;
+}
+#content main .product-data .products table tr td .status.completed {
+    background: var(--blue);
+}
+#content main .product-data .products table tr td .status.process {
+    background: var(--yellow);
+}
+#content main .product-data .products table tr td .status.pending {
+    background: var(--orange);
+}

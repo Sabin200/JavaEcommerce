@@ -1,0 +1,495 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: May 21, 2025 at 07:25 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `zefex`
+--
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cleanup_expired_tokens` ()   BEGIN
+    DELETE FROM remember_me_tokens WHERE expiry_date < NOW();
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart`
+--
+
+CREATE TABLE `cart` (
+  `cart_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `cart_quantity` int(11) DEFAULT NULL,
+  `cart_totalamount` decimal(10,2) DEFAULT NULL,
+  `cart_status` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`cart_id`, `user_id`, `cart_quantity`, `cart_totalamount`, `cart_status`) VALUES
+(203, 3, 5, 1999.95, 'Completed'),
+(204, 17, 1, 1500.00, 'Processing');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart_product`
+--
+
+CREATE TABLE `cart_product` (
+  `cp_id` int(11) NOT NULL,
+  `cart_id` int(11) DEFAULT NULL,
+  `pro_id` int(11) DEFAULT NULL,
+  `pv_id` int(11) DEFAULT NULL,
+  `pc_quantity` int(11) DEFAULT NULL,
+  `pc_total` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE `category` (
+  `cat_id` int(11) NOT NULL,
+  `cat_name` varchar(100) DEFAULT NULL,
+  `category_status` varchar(20) DEFAULT NULL,
+  `category_description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cloth_category`
+--
+
+CREATE TABLE `cloth_category` (
+  `cloth_cat_id` int(20) NOT NULL,
+  `cloth_cat_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cloth_category`
+--
+
+INSERT INTO `cloth_category` (`cloth_cat_id`, `cloth_cat_name`) VALUES
+(1, 'male'),
+(2, 'female');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `order_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `totalamount` decimal(10,2) DEFAULT NULL,
+  `discount` decimal(10,2) DEFAULT NULL,
+  `order_shippingaddress` varchar(255) DEFAULT NULL,
+  `shippingamount` decimal(10,2) DEFAULT NULL,
+  `netamount` decimal(10,2) DEFAULT NULL,
+  `order_status` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_product`
+--
+
+CREATE TABLE `order_product` (
+  `op_id` int(11) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `pro_id` int(11) DEFAULT NULL,
+  `pv_id` int(11) DEFAULT NULL,
+  `op_quantity` int(11) DEFAULT NULL,
+  `op_total` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product`
+--
+
+CREATE TABLE `product` (
+  `pro_id` int(11) NOT NULL,
+  `pro_name` varchar(100) DEFAULT NULL,
+  `pro_quantity` int(11) DEFAULT NULL,
+  `pro_status` varchar(20) DEFAULT NULL,
+  `pro_description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `product_id` int(100) NOT NULL,
+  `product_name` varchar(100) NOT NULL,
+  `cloth_category_id` int(100) NOT NULL,
+  `product_category_id` int(100) NOT NULL,
+  `brand` varchar(100) NOT NULL,
+  `price` float NOT NULL,
+  `stock` int(100) NOT NULL,
+  `ratings` float NOT NULL,
+  `product_description` text NOT NULL,
+  `product_image` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_category`
+--
+
+CREATE TABLE `product_category` (
+  `product_cat_id` int(20) NOT NULL,
+  `product_cat_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_category`
+--
+
+INSERT INTO `product_category` (`product_cat_id`, `product_cat_name`) VALUES
+(1, 'pant'),
+(2, 'shirt'),
+(3, 'sweater'),
+(4, 'skirt'),
+(5, 'jeans_shirt'),
+(6, 'jeans_pant'),
+(7, 'socks');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_variant`
+--
+
+CREATE TABLE `product_variant` (
+  `pv_id` int(11) NOT NULL,
+  `pro_id` int(11) DEFAULT NULL,
+  `cat_id` int(11) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `size` varchar(20) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `fabric` varchar(50) DEFAULT NULL,
+  `pv_quantity` int(11) DEFAULT NULL,
+  `pv_status` varchar(20) DEFAULT NULL,
+  `pv_description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `remember_me_tokens`
+--
+
+CREATE TABLE `remember_me_tokens` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expiry_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `remember_me_tokens`
+--
+
+INSERT INTO `remember_me_tokens` (`id`, `user_id`, `token`, `expiry_date`, `created_at`) VALUES
+(1, 1, 'ZtIeUOCcoiRV1W4Dd4lWgiAuW5rnyIFSqhyBlzj0rCA', '2025-05-19 05:20:38', '2025-04-19 05:20:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL,
+  `username` varchar(40) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `shipping_address` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `fullname` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `loyalty_points` int(11) DEFAULT 0,
+  `email` varchar(100) NOT NULL,
+  `first_name` varchar(70) DEFAULT NULL,
+  `last_name` varchar(60) DEFAULT NULL,
+  `user_role` varchar(50) DEFAULT NULL,
+  `user_image` text DEFAULT NULL,
+  `contact` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `username`, `address`, `shipping_address`, `phone`, `role`, `fullname`, `password`, `loyalty_points`, `email`, `first_name`, `last_name`, `user_role`, `user_image`, `contact`) VALUES
+(3, 'Suju', 'ktm', NULL, NULL, NULL, NULL, 'Y+KyTJ33dsOmQXncnLA0Ng==', 0, 'sujata@gmail.com', 'Sujata', 'Pandey', 'customer', '', '9823460912'),
+(16, 'ramu', 'ktm', NULL, NULL, NULL, NULL, 'p/gJhtt3GX8Ozhx8knqnaQ==', 0, 'ramu@gmail.com', 'ram', 'hamal', 'customer', '', '9867012345'),
+(17, 'admin', 'cat', NULL, NULL, NULL, NULL, 'uInoNTKLa+Qo0YRHIvUk4Q==', 0, 'admin@gmail.com', 'prity', 'thapa', 'admin', '', '7777777777'),
+(18, 'new', 'ktm', NULL, NULL, NULL, NULL, 'p/gJhtt3GX8Ozhx8knqnaQ==', 0, 'new@gmail.com', 'new', 'grg', 'customer', '', '9876543210'),
+(19, 'admin', NULL, NULL, NULL, 'ADMIN', 'System Administrator', 'U2FsdGVkX1+3K9dQK3yNkQ==', NULL, 'adminGmail', NULL, NULL, 'ADMIN', NULL, NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`cart_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `cart_product`
+--
+ALTER TABLE `cart_product`
+  ADD PRIMARY KEY (`cp_id`),
+  ADD KEY `cart_id` (`cart_id`),
+  ADD KEY `pro_id` (`pro_id`),
+  ADD KEY `pv_id` (`pv_id`);
+
+--
+-- Indexes for table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`cat_id`);
+
+--
+-- Indexes for table `cloth_category`
+--
+ALTER TABLE `cloth_category`
+  ADD PRIMARY KEY (`cloth_cat_id`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `order_product`
+--
+ALTER TABLE `order_product`
+  ADD PRIMARY KEY (`op_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `pro_id` (`pro_id`),
+  ADD KEY `pv_id` (`pv_id`);
+
+--
+-- Indexes for table `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`pro_id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`product_id`),
+  ADD KEY `product_category_id` (`product_category_id`),
+  ADD KEY `cloth_category_id` (`cloth_category_id`);
+
+--
+-- Indexes for table `product_category`
+--
+ALTER TABLE `product_category`
+  ADD PRIMARY KEY (`product_cat_id`);
+
+--
+-- Indexes for table `product_variant`
+--
+ALTER TABLE `product_variant`
+  ADD PRIMARY KEY (`pv_id`),
+  ADD KEY `pro_id` (`pro_id`),
+  ADD KEY `cat_id` (`cat_id`);
+
+--
+-- Indexes for table `remember_me_tokens`
+--
+ALTER TABLE `remember_me_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uk_token` (`token`),
+  ADD KEY `idx_remember_me_token` (`token`),
+  ADD KEY `idx_remember_me_expiry` (`expiry_date`),
+  ADD KEY `idx_remember_me_user` (`user_id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `username` (`fullname`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
+
+--
+-- AUTO_INCREMENT for table `cart_product`
+--
+ALTER TABLE `cart_product`
+  MODIFY `cp_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `category`
+  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `cloth_category`
+--
+ALTER TABLE `cloth_category`
+  MODIFY `cloth_cat_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `order_product`
+--
+ALTER TABLE `order_product`
+  MODIFY `op_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `product`
+--
+ALTER TABLE `product`
+  MODIFY `pro_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `product_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `product_category`
+--
+ALTER TABLE `product_category`
+  MODIFY `product_cat_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `product_variant`
+--
+ALTER TABLE `product_variant`
+  MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `remember_me_tokens`
+--
+ALTER TABLE `remember_me_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `cart_product`
+--
+ALTER TABLE `cart_product`
+  ADD CONSTRAINT `cart_product_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`),
+  ADD CONSTRAINT `cart_product_ibfk_2` FOREIGN KEY (`pro_id`) REFERENCES `product` (`pro_id`),
+  ADD CONSTRAINT `cart_product_ibfk_3` FOREIGN KEY (`pv_id`) REFERENCES `product_variant` (`pv_id`);
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `order_product`
+--
+ALTER TABLE `order_product`
+  ADD CONSTRAINT `order_product_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+  ADD CONSTRAINT `order_product_ibfk_2` FOREIGN KEY (`pro_id`) REFERENCES `product` (`pro_id`),
+  ADD CONSTRAINT `order_product_ibfk_3` FOREIGN KEY (`pv_id`) REFERENCES `product_variant` (`pv_id`);
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `cloth_category_id` FOREIGN KEY (`cloth_category_id`) REFERENCES `cloth_category` (`cloth_cat_id`),
+  ADD CONSTRAINT `product_category_id` FOREIGN KEY (`product_category_id`) REFERENCES `product_category` (`product_cat_id`);
+
+--
+-- Constraints for table `product_variant`
+--
+ALTER TABLE `product_variant`
+  ADD CONSTRAINT `product_variant_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `product` (`pro_id`),
+  ADD CONSTRAINT `product_variant_ibfk_2` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`);
+
+DELIMITER $$
+--
+-- Events
+--
+CREATE DEFINER=`root`@`localhost` EVENT `cleanup_tokens_event` ON SCHEDULE EVERY 1 DAY STARTS '2025-04-18 22:01:49' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    CALL cleanup_expired_tokens();
+END$$
+
+DELIMITER ;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
